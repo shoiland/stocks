@@ -5,7 +5,7 @@ from twilio.rest import Client
 import re
 
 STOCK = "TSLA"
-COMPANY_NAME = "Tesla Inc"
+COMPANY_NAME = "Tesla"
 UP = "🔺"
 DOWN = "🔻"
 
@@ -52,7 +52,7 @@ def get_news():
     url = "https://newsapi.org/v2/everything"
     parameters = {
         "apiKey": os.environ.get("API_NEWS"),
-        "q": f"{COMPANY_NAME}",
+        "qInTitle": f"{COMPANY_NAME}",
         "pageSize": 3
     }
     response = requests.get(url, params=parameters)
@@ -77,6 +77,9 @@ def send_news_text(articles, direction, percent):
         brief = re.sub('<[^<]*?/?>', '', brief)
         news_article = f"-----------\nHeadline: {title}\n\nBrief: {brief}\n\n"
         body = body + news_article
+
+    formatted_articles = [f"----------\nHeadlines: {article['title']}. \nBrief: {article['description']}\n" for article in articles]
+    formatted_statement = ''.join(formatted_articles)
 
     message = client.messages \
         .create(
