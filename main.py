@@ -68,27 +68,28 @@ def send_news_text(articles, direction, percent):
     auth_token = os.environ['TWILIO_AUTH_TOKEN']
     client = Client(account_sid, auth_token)
 
-    body = f"{STOCK}: {direction} {percent}%\n\n"
+    heading = f"Date: {today}\n{STOCK}: {direction} {percent}%\n\n"
+    # body = f"Date: {today}\n{STOCK}: {direction} {percent}%\n\n"
+    #
+    # print(articles)
+    # for article in articles:
+    #     title = article["title"]
+    #     brief = article["description"]
+    #     brief = re.sub('<[^<]*?/?>', '', brief)
+    #     news_article = f"-----------\nHeadline: {title}\n\nBrief: {brief}\n\n"
+    #     body = body + news_article
 
-    print(articles)
-    for article in articles:
-        title = article["title"]
-        brief = article["description"]
-        brief = re.sub('<[^<]*?/?>', '', brief)
-        news_article = f"-----------\nHeadline: {title}\n\nBrief: {brief}\n\n"
-        body = body + news_article
-
-    formatted_articles = [f"----------\nHeadlines: {article['title']}. \nBrief: {article['description']}\n" for article in articles]
-    formatted_statement = ''.join(formatted_articles)
+    formatted_articles = [f"----------\nHeadlines: {article['title']}. \n\nBrief: {article['description']}\n" for article in articles]
+    formatted_statement = heading + ''.join(formatted_articles)
 
     message = client.messages \
         .create(
-        body=body,
+        body=formatted_statement,
         from_='+15139603906',
         to='+15127573736'
     )
 
-    print(message.sid)
+    print(message)
 
 
 get_difference()
